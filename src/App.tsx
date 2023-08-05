@@ -59,11 +59,19 @@ export function App() {
           <ModalBody>
             <div>OP</div>
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+          <ModalFooter justifyContent={"center"}>
+            <Button
+              bg={"#FF0420"}
+              borderRadius={"12"}
+              color={"#fff"}
+              fontSize={"16"}
+              fontWeight={"700"}
+              px="20"
+              py="6"
+              onClick={onClose}
+            >
+              Replay
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
