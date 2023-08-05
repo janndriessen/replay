@@ -16,7 +16,7 @@ import {
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
-import { Attestooooooor } from "./components";
+import { Attestooooooor, ReplayButton, ReplayTransaction } from "./components";
 
 export function App() {
   /**
@@ -51,27 +51,17 @@ export function App() {
         onClose={onClose}
         isOpen={isOpen}
         motionPreset="slideInBottom"
+        size={"xl"}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>🔴 Replay Transaction</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div>OP</div>
+            <ReplayTransaction />
           </ModalBody>
           <ModalFooter justifyContent={"center"}>
-            <Button
-              bg={"#FF0420"}
-              borderRadius={"12"}
-              color={"#fff"}
-              fontSize={"16"}
-              fontWeight={"700"}
-              px="20"
-              py="6"
-              onClick={onClose}
-            >
-              Replay
-            </Button>
+            <ReplayButton onClick={onClose} />
           </ModalFooter>
         </ModalContent>
       </Modal>
