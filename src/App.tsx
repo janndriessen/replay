@@ -2,6 +2,13 @@ import {
   useDisclosure,
   Button,
   Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Slide,
   Box,
   Text,
@@ -17,6 +24,7 @@ export function App() {
    * @see https://wagmi.sh/docs/hooks/useAccount
    */
   const { isConnected } = useAccount();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -25,6 +33,7 @@ export function App() {
 
       <BigTitle />
       <SlideEx />
+      <Button onClick={onOpen}>Open Modal</Button>
 
       {/** @see https://www.rainbowkit.com/docs/connect-button */}
       <ConnectButton />
@@ -36,6 +45,28 @@ export function App() {
           <hr />
         </>
       )}
+
+      <Modal
+        isCentered
+        onClose={onClose}
+        isOpen={isOpen}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>🔴 Replay Transaction</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div>OP</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }
@@ -57,7 +88,7 @@ function NavBar() {
 
 function BigTitle() {
   return (
-    <Flex alignItems={"center"} gap={2}>
+    <Flex alignItems={"center"} gap={3}>
       <Box borderRadius={48} bg={"#FF0420"} w={10} h={10} />
       <Text fontSize="4xl" fontWeight={400}>
         Replay
@@ -68,7 +99,7 @@ function BigTitle() {
 
 function SmallTitle() {
   return (
-    <Flex alignItems={"center"} gap={1}>
+    <Flex alignItems={"center"} gap={2}>
       <Box borderRadius={48} bg={"#FF0420"} w={4} h={4} />
       <Text fontSize="lg" fontWeight={400}>
         Replay
