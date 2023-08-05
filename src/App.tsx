@@ -20,6 +20,7 @@ export function App() {
 
   return (
     <>
+      <NavBar />
       <h1>OP Starter Project</h1>
 
       <BigTitle />
@@ -39,11 +40,37 @@ export function App() {
   );
 }
 
+function NavBar() {
+  return (
+    <Flex
+      alignItems={"center"}
+      justify={"space-between"}
+      px={"32px"}
+      py={"16px"}
+      boxShadow={"md"}
+    >
+      <SmallTitle />
+      <ConnectButton />
+    </Flex>
+  );
+}
+
 function BigTitle() {
   return (
-    <Flex alignItems={"center"} gap={4}>
-      <Box borderRadius={48} bg={"#FF0420"} w={9} h={9} />
-      <Text fontSize="5xl" fontWeight={400}>
+    <Flex alignItems={"center"} gap={2}>
+      <Box borderRadius={48} bg={"#FF0420"} w={10} h={10} />
+      <Text fontSize="4xl" fontWeight={400}>
+        Replay
+      </Text>
+    </Flex>
+  );
+}
+
+function SmallTitle() {
+  return (
+    <Flex alignItems={"center"} gap={1}>
+      <Box borderRadius={48} bg={"#FF0420"} w={4} h={4} />
+      <Text fontSize="lg" fontWeight={400}>
         Replay
       </Text>
     </Flex>
