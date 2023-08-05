@@ -24,8 +24,8 @@ dependencies:
     specifier: ^1.0.7
     version: 1.0.7
   '@eth-optimism/sdk':
-    specifier: 0.0.0-20230301065104
-    version: 0.0.0-20230301065104(ethers@5.7.2)(typescript@4.9.5)
+    specifier: 3.1.0
+    version: 3.1.0(ethers@5.7.2)
   '@openzeppelin/contracts':
     specifier: 4.7.3
     version: 4.7.3
@@ -1829,22 +1829,6 @@ packages:
       zod: 3.21.4
     dev: false
 
-  /@eth-optimism/contracts-bedrock@0.0.0-20230301065104(typescript@4.9.5):
-    resolution: {integrity: sha512-n3NDwq6IupWaJebMGnkqWKfu5lddImSJPxDJ6u7zWaKBLY/BU3CNbbVfmUIbukip0cW2eCWkI3qNi//fIcF6JA==}
-    dependencies:
-      '@eth-optimism/core-utils': 0.12.0
-      '@openzeppelin/contracts': 4.7.3
-      '@openzeppelin/contracts-upgradeable': 4.7.3
-      ethers: 5.7.2
-      hardhat: 2.17.1(typescript@4.9.5)
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - ts-node
-      - typescript
-      - utf-8-validate
-    dev: false
-
   /@eth-optimism/contracts-bedrock@0.12.1(typescript@4.9.5):
     resolution: {integrity: sha512-ttyaefzmQv9cDF+IZUCHAcClQt3+Qq18jvmSs0UNuzOjLgBG5msaBgBY/OSzr8eiYmym+kgYz2D46/AwsZVmSA==}
     dependencies:
@@ -1862,12 +1846,21 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@eth-optimism/contracts-bedrock@0.16.0:
+    resolution: {integrity: sha512-MfHJdeQ/BzHgkoHnA+NGb1hU8CH0OFsp4ylmFi0uwYh3xPJxcHt9qhy1g4MGGMUGAPIUmlBPaqhwbBlQkaeFrA==}
+    dependencies:
+      '@openzeppelin/contracts': 4.7.3
+      '@openzeppelin/contracts-upgradeable': 4.7.3
+      '@rari-capital/solmate': github.com/transmissions11/solmate/8f9b23f8838670afda0fd8983f2c41e8037ae6bc
+      clones-with-immutable-args: github.com/Saw-mon-and-Natalie/clones-with-immutable-args/105efee1b9127ed7f6fedf139e1fc796ce8791f2
+    dev: false
+
   /@eth-optimism/contracts-periphery@1.0.7:
     resolution: {integrity: sha512-kE5U2hLkjstLP2rqVXM2WAzK4YtrUzAEHOADr1G6byEpFPVQRgcsMLawe2pGxB5TI0CWAYB3O2PHYAbHHwLeug==}
     dev: false
 
-  /@eth-optimism/contracts@0.5.40(ethers@5.7.2):
-    resolution: {integrity: sha512-MrzV0nvsymfO/fursTB7m/KunkPsCndltVgfdHaT1Aj5Vi6R/doKIGGkOofHX+8B6VMZpuZosKCMQ5lQuqjt8w==}
+  /@eth-optimism/contracts@0.6.0(ethers@5.7.2):
+    resolution: {integrity: sha512-vQ04wfG9kMf1Fwy3FEMqH2QZbgS0gldKhcBeBUPfO8zu68L61VI97UDXmsMQXzTsEAxK8HnokW3/gosl4/NW3w==}
     peerDependencies:
       ethers: ^5
     dependencies:
@@ -1927,23 +1920,21 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@eth-optimism/sdk@0.0.0-20230301065104(ethers@5.7.2)(typescript@4.9.5):
-    resolution: {integrity: sha512-9DQeZOx6jzcENkwOsjofxuD1f/nIH31Ff/IxGd6WXCfltfvwmEihwEC7e8dsqfk/aPM8MacQtCBzSqHIQWW9yA==}
+  /@eth-optimism/sdk@3.1.0(ethers@5.7.2):
+    resolution: {integrity: sha512-E1/Tk145Aln1qGxFcbEugtjzTJTnZgmTt8AUe4g9ghC7+6r1YOVav+KZuoMoyR+nF6/FbKdmVq0wqYilZOLq3w==}
     peerDependencies:
       ethers: ^5
     dependencies:
-      '@eth-optimism/contracts': 0.5.40(ethers@5.7.2)
-      '@eth-optimism/contracts-bedrock': 0.0.0-20230301065104(typescript@4.9.5)
-      '@eth-optimism/core-utils': 0.12.0
+      '@eth-optimism/contracts': 0.6.0(ethers@5.7.2)
+      '@eth-optimism/contracts-bedrock': 0.16.0
+      '@eth-optimism/core-utils': 0.12.2
       ethers: 5.7.2
       lodash: 4.17.21
       merkletreejs: 0.2.32
       rlp: 2.2.7
     transitivePeerDependencies:
       - bufferutil
-      - supports-color
-      - ts-node
-      - typescript
+      - encoding
       - utf-8-validate
     dev: false
 
@@ -7837,4 +7828,16 @@ packages:
       '@types/react': 18.0.9
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  github.com/Saw-mon-and-Natalie/clones-with-immutable-args/105efee1b9127ed7f6fedf139e1fc796ce8791f2:
+    resolution: {tarball: https://codeload.github.com/Saw-mon-and-Natalie/clones-with-immutable-args/tar.gz/105efee1b9127ed7f6fedf139e1fc796ce8791f2}
+    name: clones-with-immutable-args
+    version: 2.0.0
+    dev: false
+
+  github.com/transmissions11/solmate/8f9b23f8838670afda0fd8983f2c41e8037ae6bc:
+    resolution: {tarball: https://codeload.github.com/transmissions11/solmate/tar.gz/8f9b23f8838670afda0fd8983f2c41e8037ae6bc}
+    name: '@rari-capital/solmate'
+    version: 7.0.0-alpha.3
     dev: false
