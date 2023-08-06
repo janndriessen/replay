@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import {
   Button,
+  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -12,6 +14,54 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { parseEther, parseGwei, serializeTransaction } from "viem";
+import { usePrepareSendTransaction, useSendTransaction } from "wagmi";
+
+import { estimateFees, getL1Fee, getL2Client } from "../estimateFees";
+import { OP_ABI } from "../OP_ABI";
+
+const clientParams = {
+  chainId: 10,
+  rpcUrl:
+    process.env.VITE_L2_RPC_URL ??
+    `https://opt-mainnet.g.alchemy.com/v2/${
+      import.meta.env.VITE_ALCHEMY_API_KEY
+    }`,
+} as const;
+
+const viemClient = getL2Client(clientParams);
+
+const serialized = serializeTransaction({
+  chainId: 10,
+  gas: 21001n,
+  gasLimit: 500_000,
+  maxFeePerGas: parseGwei("20"),
+  maxPriorityFeePerGas: parseGwei("2"),
+  nonce: 69,
+  to: "0x1234512345123451234512345123451234512345",
+  value: parseEther("0.01"),
+});
+console.log(serialized);
+
+// data
+// to
+// gasPrice
+// type
+// nonce
+// gasLimit
+
+// useEffect(() => {
+//   console.log("Error sending tx:", sendError);
+// }, [sendError]);
+
+// const test = () => {
+//   if (!sendTransaction) return;
+//   try {
+//     sendTransaction();
+//   } catch (error: unknown) {
+//     console.log("Error sending tx:", error);
+//   }
+// };
 
 interface ReplayButtonProps {
   onClick: () => void;
@@ -32,7 +82,48 @@ export const ReplayButton = ({ onClick }: ReplayButtonProps) => (
   </Button>
 );
 
+type Fees = {
+  l1: string;
+  l2: string;
+  total: string;
+};
+
 export function ReplayTransaction() {
+  const [fees, setFees] = useState<Fees | null>(null);
+  // Send ETH to Vitalik
+  const { config } = usePrepareSendTransaction({
+    to: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    value: parseEther("0.001"),
+  });
+  const { sendTransaction, error: sendError } = useSendTransaction(config);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const fees = await estimateFees({
+        client: viemClient,
+        chainId: 10,
+        functionName: "transfer",
+        abi: OP_ABI,
+        args: ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", parseEther("10")],
+        account: "0xdfa7D985aA3c73e6cD87cC088943627427C56C9E",
+        to: "0x4200000000000000000000000000000000000042",
+      });
+      setFees({
+        l1: fees.l1Fee.toString(),
+        l2: fees.l2Fee.toString(),
+        total: fees.total.toString(),
+      });
+      console.log(
+        "FEES",
+        fees,
+        fees.l1Fee.toString(),
+        fees.l2Fee.toString(),
+        fees.total.toString(),
+      );
+    };
+    fetch();
+  }, []);
+
   return (
     <>
       <InputGroup>
@@ -53,30 +144,39 @@ export function ReplayTransaction() {
           <TableCaption>Cost Estimation</TableCaption>
           <Thead>
             <Tr>
-              <Th>To convert</Th>
-              <Th>into</Th>
-              <Th isNumeric>multiply by</Th>
+              <Th>Type</Th>
+              <Th isNumeric>Fees</Th>
             </Tr>
           </Thead>
           <Tbody>
             <Tr>
-              <Td>inches</Td>
-              <Td>millimetres (mm)</Td>
-              <Td isNumeric>25.4</Td>
+              <Td>L1</Td>
+              <Td isNumeric>{fees?.l1 ?? ""}</Td>
             </Tr>
             <Tr>
-              <Td>feet</Td>
-              <Td>centimetres (cm)</Td>
-              <Td isNumeric>30.48</Td>
+              <Td>L2</Td>
+              <Td isNumeric>{fees?.l2 ?? ""}</Td>
             </Tr>
             <Tr>
-              <Td>yards</Td>
-              <Td>metres (m)</Td>
-              <Td isNumeric>0.91444</Td>
+              <Td>
+                <b>Total</b>
+              </Td>
+              <Td isNumeric>
+                <b>{fees?.total ?? ""}</b>
+              </Td>
             </Tr>
           </Tbody>
         </Table>
       </TableContainer>
+      <Flex
+        borderRadius={"16px"}
+        borderColor="gray"
+        borderWidth={1}
+        p={"16px"}
+        mt={"32px"}
+      >
+        Simulation
+      </Flex>
     </>
   );
 }
