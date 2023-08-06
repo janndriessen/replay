@@ -1,26 +1,13 @@
 import {
-  useDisclosure,
   Button,
-  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Slide,
-  Box,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
-  Tfoot,
   Td,
-  Text,
   Th,
   Thead,
   Tr,
@@ -49,6 +36,15 @@ export function ReplayTransaction() {
   return (
     <>
       <InputGroup>
+        <InputLeftAddon children="Tx Hash" />
+        <Input
+          type="text"
+          placeholder="0x00dead"
+          isReadOnly={true}
+          onClick={() => console.log("etherscan")}
+        />
+      </InputGroup>
+      <InputGroup mt={"16px"}>
         <InputLeftAddon children="Custom Gas Limit" />
         <Input type="number" placeholder="500_000" />
       </InputGroup>
