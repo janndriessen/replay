@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 import {
   useDisclosure,
-  Button,
   Flex,
   Modal,
   ModalBody,
@@ -9,12 +10,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Slide,
-  Box,
   SlideFade,
+  Fade,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
 
 import {
   BigTitle,
@@ -22,7 +21,6 @@ import {
   ReplayButton,
   ReplayTransaction,
 } from "./components";
-import { useEffect, useState } from "react";
 
 export function App() {
   /**
@@ -31,8 +29,28 @@ export function App() {
    */
   const { isConnected } = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: introIsOpen,
+    onOpen: onOpenIntro,
+    onClose: onCloseIntro,
+  } = useDisclosure();
   const { isOpen: navIsOpen, onOpen: onOpenNav } = useDisclosure();
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  useEffect(() => {
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    const openIntro = async () => {
+      await delay(750);
+      onOpenIntro();
+    };
+    openIntro();
+  }, []);
+
+  useEffect(() => {
+    if (!dataLoaded) return;
+    onOpenNav();
+    onCloseIntro();
+  }, [dataLoaded]);
 
   return (
     <Flex direction={"column"} h="100vh">
@@ -40,28 +58,25 @@ export function App() {
         <NavBar isConnected={isConnected} />
       </SlideFade>
 
-      {/* // TODO: add fade out animation */}
-      <Flex h="100%">
-        <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
-          <BigTitle />
-          {!isConnected && (
-            <>
-              <Flex>
-                <SlideEx />
-                <Button onClick={() => onOpenNav()}>Open Modal</Button>
-              </Flex>
-              <ConnectButton />
-            </>
-          )}
-          {isConnected && <Loader onFinishedLoading={() => onOpenNav()} />}
+      <Fade in={introIsOpen}>
+        <Flex h="80vh" margin={"auto"}>
+          <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
+            <BigTitle />
+            <Flex mt="20px">
+              {isConnected && (
+                <Loader onFinishedLoading={() => setDataLoaded(true)} />
+              )}
+              {!isConnected && <ConnectButton />}
+            </Flex>
+          </Flex>
         </Flex>
-      </Flex>
+      </Fade>
 
       <Modal
         isCentered
-        onClose={onClose}
         isOpen={isOpen}
         motionPreset="slideInBottom"
+        onClose={onClose}
         size={"xl"}
       >
         <ModalOverlay />
@@ -98,7 +113,7 @@ function Loader({ onFinishedLoading }: LoaderProps) {
   }, []);
   return (
     <>
-      <Spinner color="red.500" />
+      <Spinner color="op" size="lg" />
     </>
   );
 }
@@ -119,25 +134,5 @@ function NavBar({ isConnected }: NavBarProps) {
       <SmallTitle />
       {isConnected && <ConnectButton />}
     </Flex>
-  );
-}
-
-function SlideEx() {
-  const { isOpen, onToggle } = useDisclosure();
-
-  return (
-    <>
-      <Button onClick={onToggle}>Click Me</Button>
-      <Slide direction="bottom" in={isOpen} style={{ zIndex: 10 }}>
-        <Box
-          p="40px"
-          color="white"
-          mt="4"
-          bg="teal.500"
-          rounded="md"
-          shadow="md"
-        ></Box>
-      </Slide>
-    </>
   );
 }

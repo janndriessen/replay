@@ -2,9 +2,9 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 
 export function BigTitle() {
   return (
-    <Flex alignItems={"center"} gap={3}>
-      <Box borderRadius={48} bg={"op"} w={9} h={9} />
-      <Text fontSize="5xl" fontWeight={400}>
+    <Flex align={"center"} gap={4}>
+      <Box borderRadius={48} bg={"op"} w={10} h={10} />
+      <Text fontSize="6xl" fontWeight={400} mb="1">
         Replay
       </Text>
     </Flex>
