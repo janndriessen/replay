@@ -1,7 +1,6 @@
 import {
   useDisclosure,
   Button,
-  Collapse,
   Flex,
   Modal,
   ModalBody,
@@ -12,14 +11,18 @@ import {
   ModalOverlay,
   Slide,
   Box,
-  Text,
   SlideFade,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
-import { ReplayButton, ReplayTransaction } from "./components";
-import { useEffect } from "react";
+import {
+  BigTitle,
+  SmallTitle,
+  ReplayButton,
+  ReplayTransaction,
+} from "./components";
+import { useEffect, useState } from "react";
 
 export function App() {
   /**
@@ -29,15 +32,7 @@ export function App() {
   const { isConnected } = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: navIsOpen, onOpen: onOpenNav } = useDisclosure();
-
-  useEffect(() => {
-    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-    const sleep = async () => {
-      await delay(5000);
-      console.log("animate");
-    };
-    sleep();
-  }, []);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   return (
     <Flex direction={"column"} h="100vh">
@@ -45,20 +40,22 @@ export function App() {
         <NavBar isConnected={isConnected} />
       </SlideFade>
 
+      {/* // TODO: add fade out animation */}
       <Flex h="100%">
-        <Flex direction={"column"} justify={"flex-start"} margin={"auto"}>
-          <h1>OP Starter Project</h1>
+        <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
           <BigTitle />
-          <Flex>
-            <SlideEx />
-            <Button onClick={() => onOpenNav()}>Open Modal</Button>
-          </Flex>
-          {/** @see https://www.rainbowkit.com/docs/connect-button */}
-          <ConnectButton />
+          {!isConnected && (
+            <>
+              <Flex>
+                <SlideEx />
+                <Button onClick={() => onOpenNav()}>Open Modal</Button>
+              </Flex>
+              <ConnectButton />
+            </>
+          )}
+          {isConnected && <Loader onFinishedLoading={() => onOpenNav()} />}
         </Flex>
       </Flex>
-
-      {isConnected && <>isConnected</>}
 
       <Modal
         isCentered
@@ -83,6 +80,29 @@ export function App() {
   );
 }
 
+import { Spinner } from "@chakra-ui/react";
+
+interface LoaderProps {
+  onFinishedLoading: () => void;
+}
+
+function Loader({ onFinishedLoading }: LoaderProps) {
+  useEffect(() => {
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    const sleep = async () => {
+      await delay(5000);
+      console.log("animate");
+      onFinishedLoading();
+    };
+    sleep();
+  }, []);
+  return (
+    <>
+      <Spinner color="red.500" />
+    </>
+  );
+}
+
 interface NavBarProps {
   isConnected: boolean;
 }
@@ -98,28 +118,6 @@ function NavBar({ isConnected }: NavBarProps) {
     >
       <SmallTitle />
       {isConnected && <ConnectButton />}
-    </Flex>
-  );
-}
-
-function BigTitle() {
-  return (
-    <Flex alignItems={"center"} gap={3}>
-      <Box borderRadius={48} bg={"#FF0420"} w={10} h={10} />
-      <Text fontSize="4xl" fontWeight={400}>
-        Replay
-      </Text>
-    </Flex>
-  );
-}
-
-function SmallTitle() {
-  return (
-    <Flex alignItems={"center"} gap={2}>
-      <Box borderRadius={48} bg={"#FF0420"} w={4} h={4} />
-      <Text fontSize="lg" fontWeight={400}>
-        Replay
-      </Text>
     </Flex>
   );
 }

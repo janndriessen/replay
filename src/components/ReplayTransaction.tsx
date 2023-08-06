@@ -32,7 +32,7 @@ interface ReplayButtonProps {
 
 export const ReplayButton = ({ onClick }: ReplayButtonProps) => (
   <Button
-    bg={"#FF0420"}
+    bg={"op"}
     borderRadius={"12"}
     color={"#fff"}
     fontSize={"16"}
