@@ -17,7 +17,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import {
   BigTitle,
-  SmallTitle,
+  NavigationBar,
   ReplayButton,
   ReplayTransaction,
 } from "./components";
@@ -55,7 +55,7 @@ export function App() {
   return (
     <Flex direction={"column"} h="100vh">
       <SlideFade in={navIsOpen} offsetY={"-100px"}>
-        <NavBar isConnected={isConnected} />
+        <NavigationBar isConnected={isConnected} />
       </SlideFade>
 
       <Fade in={introIsOpen}>
@@ -115,24 +115,5 @@ function Loader({ onFinishedLoading }: LoaderProps) {
     <>
       <Spinner color="op" size="lg" />
     </>
-  );
-}
-
-interface NavBarProps {
-  isConnected: boolean;
-}
-
-function NavBar({ isConnected }: NavBarProps) {
-  return (
-    <Flex
-      alignItems={"center"}
-      justify={"space-between"}
-      px={"32px"}
-      py={"16px"}
-      boxShadow={"md"}
-    >
-      <SmallTitle />
-      {isConnected && <ConnectButton />}
-    </Flex>
   );
 }
