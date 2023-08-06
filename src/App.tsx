@@ -1,6 +1,7 @@
 import {
   useDisclosure,
   Button,
+  Collapse,
   Flex,
   Modal,
   ModalBody,
@@ -12,11 +13,13 @@ import {
   Slide,
   Box,
   Text,
+  SlideFade,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
-import { Attestooooooor, ReplayButton, ReplayTransaction } from "./components";
+import { ReplayButton, ReplayTransaction } from "./components";
+import { useEffect } from "react";
 
 export function App() {
   /**
@@ -25,26 +28,37 @@ export function App() {
    */
   const { isConnected } = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: navIsOpen, onOpen: onOpenNav } = useDisclosure();
+
+  useEffect(() => {
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    const sleep = async () => {
+      await delay(5000);
+      console.log("animate");
+    };
+    sleep();
+  }, []);
 
   return (
-    <>
-      <NavBar />
-      <h1>OP Starter Project</h1>
+    <Flex direction={"column"} h="100vh">
+      <SlideFade in={navIsOpen} offsetY={"-100px"}>
+        <NavBar isConnected={isConnected} />
+      </SlideFade>
 
-      <BigTitle />
-      <SlideEx />
-      <Button onClick={onOpen}>Open Modal</Button>
+      <Flex h="100%">
+        <Flex direction={"column"} justify={"flex-start"} margin={"auto"}>
+          <h1>OP Starter Project</h1>
+          <BigTitle />
+          <Flex>
+            <SlideEx />
+            <Button onClick={() => onOpenNav()}>Open Modal</Button>
+          </Flex>
+          {/** @see https://www.rainbowkit.com/docs/connect-button */}
+          <ConnectButton />
+        </Flex>
+      </Flex>
 
-      {/** @see https://www.rainbowkit.com/docs/connect-button */}
-      <ConnectButton />
-
-      {isConnected && (
-        <>
-          <hr />
-          <Attestooooooor />
-          <hr />
-        </>
-      )}
+      {isConnected && <>isConnected</>}
 
       <Modal
         isCentered
@@ -65,11 +79,15 @@ export function App() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Flex>
   );
 }
 
-function NavBar() {
+interface NavBarProps {
+  isConnected: boolean;
+}
+
+function NavBar({ isConnected }: NavBarProps) {
   return (
     <Flex
       alignItems={"center"}
@@ -79,7 +97,7 @@ function NavBar() {
       boxShadow={"md"}
     >
       <SmallTitle />
-      <ConnectButton />
+      {isConnected && <ConnectButton />}
     </Flex>
   );
 }
