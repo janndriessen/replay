@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -17,8 +16,9 @@ import {
 import { parseEther, parseGwei, serializeTransaction } from "viem";
 import { usePrepareSendTransaction, useSendTransaction } from "wagmi";
 
-import { estimateFees, getL1Fee, getL2Client } from "../estimateFees";
+import { estimateFees, getL2Client } from "../estimateFees";
 import { OP_ABI } from "../OP_ABI";
+import { Simulator } from "./Simulatooor";
 
 const clientParams = {
   chainId: 10,
@@ -168,15 +168,7 @@ export function ReplayTransaction() {
           </Tbody>
         </Table>
       </TableContainer>
-      <Flex
-        borderRadius={"16px"}
-        borderColor="gray"
-        borderWidth={1}
-        p={"16px"}
-        mt={"32px"}
-      >
-        Simulation
-      </Flex>
+      <Simulator />
     </>
   );
 }
