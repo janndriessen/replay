@@ -17,7 +17,7 @@ import { parseEther, parseGwei, serializeTransaction } from "viem";
 import { usePrepareSendTransaction, useSendTransaction } from "wagmi";
 
 import { estimateFees, getL2Client } from "../estimateFees";
-import { OP_ABI } from "../OP_ABI";
+import { OP_ABI } from "../abis/OP_ABI";
 import { Simulator } from "./Simulatooor";
 
 const clientParams = {
