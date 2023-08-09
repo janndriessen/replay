@@ -113,6 +113,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
               <Th>hash</Th>
               <Th isNumeric>gas spent</Th>
               <Th isNumeric>value</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -127,6 +128,13 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
                   </Td>
                   <Td isNumeric>{tx.pretty_gas_quote}</Td>
                   <Td isNumeric>{tx.pretty_value_quote}</Td>
+                  <Td p="2">
+                    {tx.successful ? null : (
+                      <Button onClick={() => console.log(tx.tx_hash)}>
+                        Replay
+                      </Button>
+                    )}
+                  </Td>
                 </Tr>
               ))}
           </Tbody>
@@ -136,6 +144,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
               <Th>hash</Th>
               <Th isNumeric>gas spent</Th>
               <Th isNumeric>value</Th>
+              <Th></Th>
             </Tr>
           </Tfoot>
         </Table>
