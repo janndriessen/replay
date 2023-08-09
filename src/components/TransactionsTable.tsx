@@ -23,6 +23,7 @@ import {
   CovalentApi,
   CovalentApiResponseTransaction,
 } from "../providers/covalent-api";
+import { createFailedDepositTX } from "../transactions";
 
 interface TransactionsTableProps {
   preloadedTxs: CovalentApiResponseTransaction[];
@@ -32,6 +33,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
   const [transactions, setTransactions] = useState(preloadedTxs);
   const { data: walletClient, isError, isLoading } = useWalletClient();
 
+  // Fetches and sets transactions on switching chain.
   useEffect(() => {
     const switchedChain = async () => {
       console.log("switchedChain", chain?.id);
@@ -53,15 +55,13 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
     switchedChain();
   }, [chain]);
 
+  // Only for testing purposes to conveniently create failed tx's.
   const onFail = () => {
-    // main();
-    // console.log(walletClient);
-    // if (!walletClient) return;
-    // return
-    // const send = async () => {
-    //   await createFailedDepositTX(walletClient);
-    // };
-    // send();
+    if (!walletClient) return;
+    const send = async () => {
+      await createFailedDepositTX(walletClient);
+    };
+    send();
   };
 
   return (
