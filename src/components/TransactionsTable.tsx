@@ -20,13 +20,12 @@ import {
   Tr,
 } from "@chakra-ui/react";
 
+import { devMode } from "../constants";
 import {
   CovalentApi,
   CovalentApiResponseTransaction,
 } from "../providers/covalent-api";
 import { createFailedDepositTX } from "../transactions";
-
-const devMode = false;
 
 interface TransactionsTableProps {
   preloadedTxs: CovalentApiResponseTransaction[];

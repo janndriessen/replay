@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import {
   useDisclosure,
   Flex,
@@ -12,24 +12,26 @@ import {
   ModalOverlay,
   SlideFade,
   Fade,
-  Button,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import {
   BigTitle,
+  Loader,
   NavigationBar,
   ReplayButton,
   ReplayTransaction,
   TransactionsTable,
 } from "./components";
+import { CovalentApiResponseTransaction } from "./providers/covalent-api";
 
 export function App() {
   /**
    * Wagmi hook for getting account information
    * @see https://wagmi.sh/docs/hooks/useAccount
    */
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: introIsOpen,
@@ -38,7 +40,9 @@ export function App() {
   } = useDisclosure();
   const { isOpen: navIsOpen, onOpen: onOpenNav } = useDisclosure();
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [hideIntro, setHideIntro] = useState(false);
+  const [preloadedTxs, setPreloadedTxs] = useState<
+    CovalentApiResponseTransaction[] | null
+  >(null);
 
   useEffect(() => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -55,26 +59,37 @@ export function App() {
     onCloseIntro();
   }, [dataLoaded]);
 
-  useEffect(() => {
-    if (introIsOpen) return;
-    setHideIntro(true);
-  }, [introIsOpen]);
-
   return (
     <Flex direction={"column"} h="100vh">
       <SlideFade in={navIsOpen} offsetY={"-100px"}>
         <NavigationBar isConnected={isConnected} />
       </SlideFade>
 
-      {!hideIntro && (
+      {dataLoaded && preloadedTxs !== null ? (
+        <SlideFade in={!introIsOpen && dataLoaded && preloadedTxs !== null}>
+          <Flex h="80vh" margin={"0 auto"}>
+            <Flex direction={"column"} margin={"auto"}>
+              <TransactionsTable
+                preloadedTxs={preloadedTxs ?? []}
+              ></TransactionsTable>
+            </Flex>
+          </Flex>
+        </SlideFade>
+      ) : (
         <Fade in={introIsOpen}>
           <Flex h="80vh" margin={"auto"}>
             <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
               <BigTitle />
               <Flex mt="20px">
-                <Button onClick={() => onOpen()}>Open</Button>
-                {isConnected && (
-                  <Loader onFinishedLoading={() => setDataLoaded(true)} />
+                {isConnected && address && chain && (
+                  <Loader
+                    address={address}
+                    chainId={chain.id}
+                    onFinishedLoading={(txs) => {
+                      setDataLoaded(true);
+                      setPreloadedTxs(txs);
+                    }}
+                  />
                 )}
                 {!isConnected && <ConnectButton />}
               </Flex>
@@ -82,14 +97,6 @@ export function App() {
           </Flex>
         </Fade>
       )}
-
-      {/* <SlideFade in={!introIsOpen}> */}
-      <Flex h="80vh" margin={"0 auto"}>
-        <Flex direction={"column"} margin={"auto"}>
-          <TransactionsTable preloadedTxs={[]}></TransactionsTable>
-        </Flex>
-      </Flex>
-      {/* </SlideFade> */}
 
       <Modal
         isCentered
@@ -111,28 +118,5 @@ export function App() {
         </ModalContent>
       </Modal>
     </Flex>
-  );
-}
-
-import { Spinner } from "@chakra-ui/react";
-
-interface LoaderProps {
-  onFinishedLoading: () => void;
-}
-
-function Loader({ onFinishedLoading }: LoaderProps) {
-  useEffect(() => {
-    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-    const sleep = async () => {
-      await delay(5000);
-      console.log("animate");
-      onFinishedLoading();
-    };
-    sleep();
-  }, []);
-  return (
-    <>
-      <Spinner color="op" size="lg" />
-    </>
   );
 }
