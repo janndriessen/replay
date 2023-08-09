@@ -105,7 +105,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
           <Tbody>
             {transactions.length > 0 &&
               transactions.map((tx) => (
-                <Tr>
+                <Tr key={tx.tx_hash}>
                   <Td>{tx.successful ? <CheckIcon /> : <WarningTwoIcon />}</Td>
                   <Td>
                     <Link href={`${explorerUrl}/tx/${tx.tx_hash}`} isExternal>
