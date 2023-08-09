@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNetwork, useWalletClient } from "wagmi";
+import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { CheckIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -32,7 +32,9 @@ interface TransactionsTableProps {
   preloadedTxs: CovalentApiResponseTransaction[];
 }
 export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
+  const { address } = useAccount();
   const { chain } = useNetwork();
+  const [input, setInput] = useState("");
   const [transactions, setTransactions] = useState(preloadedTxs);
   const { data: walletClient, isError, isLoading } = useWalletClient();
 
@@ -69,6 +71,18 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
     send();
   };
 
+  const onFind = () => {
+    if (!address || !chain) return;
+    const findTransaction = async () => {
+      const covalentApi = new CovalentApi(devMode);
+      const transactions: CovalentApiResponseTransaction[] =
+        await covalentApi.getTransaction(input, chain.id);
+      console.log(transactions);
+      setTransactions(transactions);
+    };
+    findTransaction();
+  };
+
   return (
     <Flex
       direction={"column"}
@@ -82,9 +96,14 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
       {/* <Button onClick={() => onFail()}>Fail</Button> */}
       <InputGroup mt={"16px"}>
         <InputLeftAddon children="Search tx for hash:" />
-        <Input type="text" placeholder="Tx hash 0x...00" />
+        <Input
+          type="text"
+          placeholder="Tx hash 0xf9...00ac"
+          onChange={(event) => setInput(event.target.value)}
+          value={input}
+        />
         <InputRightElement width="4.5rem">
-          <Button h="1.75rem" size="sm" onClick={() => console.log("find")}>
+          <Button h="1.75rem" size="sm" onClick={() => onFind()}>
             Find
           </Button>
         </InputRightElement>

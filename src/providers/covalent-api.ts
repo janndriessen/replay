@@ -76,7 +76,7 @@ export class CovalentApi {
     console.log(chainName, hash);
     const path = `${chainName}/transaction_v2/${hash}/`;
     const res = await this.get(path);
-    return res;
+    return res.data.items;
   }
 }
 

@@ -86,7 +86,7 @@ export function App() {
       {/* <SlideFade in={!introIsOpen}> */}
       <Flex h="80vh" margin={"0 auto"}>
         <Flex direction={"column"} margin={"auto"}>
-          <TransactionsTable></TransactionsTable>
+          <TransactionsTable preloadedTxs={[]}></TransactionsTable>
         </Flex>
       </Flex>
       {/* </SlideFade> */}
