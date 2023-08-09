@@ -8,6 +8,7 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Link,
   Table,
   TableCaption,
   TableContainer,
@@ -25,6 +26,8 @@ import {
 } from "../providers/covalent-api";
 import { createFailedDepositTX } from "../transactions";
 
+const devMode = false;
+
 interface TransactionsTableProps {
   preloadedTxs: CovalentApiResponseTransaction[];
 }
@@ -33,12 +36,14 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
   const [transactions, setTransactions] = useState(preloadedTxs);
   const { data: walletClient, isError, isLoading } = useWalletClient();
 
+  const explorerUrl = chain?.blockExplorers?.default.url ?? "";
+  // console.log("block explorer", explorerUrl);
+
   // Fetches and sets transactions on switching chain.
   useEffect(() => {
     const switchedChain = async () => {
       console.log("switchedChain", chain?.id);
       if (!chain) return;
-      const devMode = true;
       const covalentApi = new CovalentApi(devMode);
       // const res = await covalentApi.getTransaction(
       //   "0x1a9e0c436d3afce7039f89fa91af9820cee8d44fdc6b1a215089a6e29edd2508",
@@ -102,7 +107,11 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
               transactions.map((tx) => (
                 <Tr>
                   <Td>{tx.successful ? <CheckIcon /> : <WarningTwoIcon />}</Td>
-                  <Td>{tx.tx_hash}</Td>
+                  <Td>
+                    <Link href={`${explorerUrl}/tx/${tx.tx_hash}`} isExternal>
+                      {tx.tx_hash}
+                    </Link>
+                  </Td>
                   <Td isNumeric>{tx.pretty_gas_quote}</Td>
                   <Td isNumeric>{tx.pretty_value_quote}</Td>
                 </Tr>
