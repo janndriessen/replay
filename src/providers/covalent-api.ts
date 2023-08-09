@@ -91,12 +91,8 @@ export class CovalentApi {
 // class TransactionsService {
 //   private client: Client;
 //   constructor() {
-//     // TODO: env
-//     this.client = new Client("");
+//     this.client = new Client(import.meta.env.VITE_COVALENT_API_KEY);
 //   }
-
-//   // TODO: getTransaction
-
 //   async getRecentTransactions(address: string, chainId: number) {
 //     const chainName = getChainName(chainId);
 //     // const resp =

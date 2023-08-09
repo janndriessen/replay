@@ -12,6 +12,7 @@ import {
   ModalOverlay,
   SlideFade,
   Fade,
+  Button,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
@@ -20,6 +21,7 @@ import {
   NavigationBar,
   ReplayButton,
   ReplayTransaction,
+  TransactionsTable,
 } from "./components";
 
 export function App() {
@@ -36,6 +38,7 @@ export function App() {
   } = useDisclosure();
   const { isOpen: navIsOpen, onOpen: onOpenNav } = useDisclosure();
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [hideIntro, setHideIntro] = useState(false);
 
   useEffect(() => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -52,25 +55,41 @@ export function App() {
     onCloseIntro();
   }, [dataLoaded]);
 
+  useEffect(() => {
+    if (introIsOpen) return;
+    setHideIntro(true);
+  }, [introIsOpen]);
+
   return (
     <Flex direction={"column"} h="100vh">
       <SlideFade in={navIsOpen} offsetY={"-100px"}>
         <NavigationBar isConnected={isConnected} />
       </SlideFade>
 
-      <Fade in={introIsOpen}>
-        <Flex h="80vh" margin={"auto"}>
-          <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
-            <BigTitle />
-            <Flex mt="20px">
-              {isConnected && (
-                <Loader onFinishedLoading={() => setDataLoaded(true)} />
-              )}
-              {!isConnected && <ConnectButton />}
+      {!hideIntro && (
+        <Fade in={introIsOpen}>
+          <Flex h="80vh" margin={"auto"}>
+            <Flex direction={"column"} alignItems={"center"} margin={"auto"}>
+              <BigTitle />
+              <Flex mt="20px">
+                <Button onClick={() => onOpen()}>Open</Button>
+                {isConnected && (
+                  <Loader onFinishedLoading={() => setDataLoaded(true)} />
+                )}
+                {!isConnected && <ConnectButton />}
+              </Flex>
             </Flex>
           </Flex>
+        </Fade>
+      )}
+
+      {/* <SlideFade in={!introIsOpen}> */}
+      <Flex h="80vh" margin={"0 auto"}>
+        <Flex direction={"column"} margin={"auto"}>
+          <TransactionsTable></TransactionsTable>
         </Flex>
-      </Fade>
+      </Flex>
+      {/* </SlideFade> */}
 
       <Modal
         isCentered
