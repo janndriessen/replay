@@ -13,8 +13,8 @@ export function NavigationBar({ isConnected }: NavBarProps) {
       alignItems={"center"}
       justify={"space-between"}
       px={"32px"}
-      py={"16px"}
-      boxShadow={"md"}
+      py={"20px"}
+      boxShadow={"sm"}
     >
       <SmallTitle />
       {isConnected && <ConnectButton />}
