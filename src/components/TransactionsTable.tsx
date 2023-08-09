@@ -45,22 +45,15 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
   useEffect(() => {
     const switchedChain = async () => {
       console.log("switchedChain", chain?.id);
-      if (!chain) return;
+      if (!address || !chain) return;
       const covalentApi = new CovalentApi(devMode);
-      // const res = await covalentApi.getTransaction(
-      //   "0x1a9e0c436d3afce7039f89fa91af9820cee8d44fdc6b1a215089a6e29edd2508",
-      //   420,
-      // );
       const transactions: CovalentApiResponseTransaction[] =
-        await covalentApi.getAllTransactions(
-          "0xEcb715b972De16D0074689ea39398e50095bA9E7",
-          chain.id,
-        );
+        await covalentApi.getAllTransactions(address, chain.id);
       console.log(transactions);
       setTransactions(transactions);
     };
     switchedChain();
-  }, [chain]);
+  }, [address, chain]);
 
   // Only for testing purposes to conveniently create failed tx's.
   const onFail = () => {
@@ -71,6 +64,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
     send();
   };
 
+  // Find a tx for a specific hash.
   const onFind = () => {
     if (!address || !chain) return;
     const findTransaction = async () => {
