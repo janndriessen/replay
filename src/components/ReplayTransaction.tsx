@@ -14,7 +14,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { parseEther, parseGwei, serializeTransaction } from "viem";
+import { formatEther, parseEther, parseGwei, serializeTransaction } from "viem";
 import {
   useNetwork,
   usePrepareSendTransaction,
@@ -101,6 +101,7 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const { chain } = useNetwork();
   const [fees, setFees] = useState<Fees | null>(null);
 
+  const currencySymbol = chain?.nativeCurrency.symbol ?? "";
   const explorerUrl = chain?.blockExplorers?.default.url ?? "";
 
   // Send ETH to Vitalik
@@ -122,9 +123,9 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
         to: "0x4200000000000000000000000000000000000042",
       });
       setFees({
-        l1: fees.l1Fee.toString(),
-        l2: fees.l2Fee.toString(),
-        total: fees.total.toString(),
+        l1: formatEther(fees.l1Fee),
+        l2: formatEther(fees.l2Fee),
+        total: formatEther(fees.total),
       });
       console.log(
         "FEES",
@@ -178,18 +179,18 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
           <Tbody>
             <Tr>
               <Td>L1</Td>
-              <Td isNumeric>{fees?.l1 ?? ""}</Td>
+              <Td isNumeric>{`${fees?.l1 ?? ""} ${currencySymbol}`}</Td>
             </Tr>
             <Tr>
               <Td>L2</Td>
-              <Td isNumeric>{fees?.l2 ?? ""}</Td>
+              <Td isNumeric>{`${fees?.l2 ?? ""} ${currencySymbol}`}</Td>
             </Tr>
             <Tr>
               <Td>
                 <b>Total</b>
               </Td>
               <Td isNumeric>
-                <b>{fees?.total ?? ""}</b>
+                <b>{`${fees?.total ?? ""} ${currencySymbol}`}</b>
               </Td>
             </Tr>
           </Tbody>
