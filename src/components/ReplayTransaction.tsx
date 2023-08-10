@@ -95,6 +95,7 @@ interface ReplayTransactionProps {
 export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const publicClient = usePublicClient();
   const { chain } = useNetwork();
+  const [customGasLimit, setCustomGasLimit] = useState("");
   const [fees, setFees] = useState<Fees | null>(null);
 
   const currencySymbol = chain?.nativeCurrency.symbol ?? "";
@@ -112,6 +113,12 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
       const tx = await publicClient.getTransaction({ hash: hash as Address });
       console.log("//////", hash);
       console.log(tx);
+      console.log(
+        "gasLimit",
+        BigInt(customGasLimit).toString(),
+        tx.gas.toString(),
+      );
+      tx.gas = BigInt(customGasLimit) ?? tx.gas;
       const { l1Fee, l2Fee, total } = await estimateFees(tx, publicClient);
       console.log(l1Fee.toString(), l2Fee.toString(), total.toString());
       setFees({
@@ -119,9 +126,13 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
         l2: formatEther(l2Fee),
         total: formatEther(total),
       });
+
+      if (customGasLimit.length === 0) {
+        setCustomGasLimit(l2Fee.toString());
+      }
     };
     fetchDetails();
-  }, [hash]);
+  }, [customGasLimit, hash]);
 
   const openExplorer = (url: string) => {
     window.open(url, "_blank", "noreferrer");
@@ -150,7 +161,12 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
       </InputGroup>
       <InputGroup mt={"16px"}>
         <InputLeftAddon children="Custom Gas Limit" />
-        <Input type="number" placeholder="500_000" />
+        <Input
+          type="number"
+          placeholder="500000"
+          onChange={(event) => setCustomGasLimit(event.target.value)}
+          value={customGasLimit}
+        />
       </InputGroup>
       <TableContainer mt="4">
         <Table variant="simple">
