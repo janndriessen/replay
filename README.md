@@ -1,3 +1,45 @@
+# 🔴 replay
+
+A tool to replay failed transactions conveniently for any user.
+
+Building this tool was inspired by this idea from the Optimism ecosystem contributions list :
+https://github.com/ethereum-optimism/ecosystem-contributions/issues/100.
+
+## Sponsors
+
+- Optimism
+- Base
+- Zora
+- Covalent
+
+## Getting started
+
+- Follow the instructions below in the original README of the optimism starter kit
+- cp .env.example .env
+- For this project you must set...
+- `pnpm i`
+- `pnpm dev`
+
+## Tech
+
+Mainly used the following tech stack to build the app.
+
+- [Optimism starter](https://github.com/ethereum-optimism/optimism-starter) template - specficially to get an easy start when participating in hackathons. (Left the original README untouched below 👇)
+- [Covalent](https://www.covalenthq.com/) for anything around fetching tx's.
+- UI w/ [ChakraUI](https://chakra-ui.com/)
+- [Viem](https://viem.sh/)
+- [Wagmi](https://wagmi.sh/)
+- Typescript
+
+### Issues
+
+Some of the issues I had with using tools of the sponsors are marked inside the code:
+
+- Optimsim:
+- Covalent:
+
+---
+
 <div align="center">
   <a href="https://optimism.io"><img alt="Optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/OPTIMISM-R.svg" width=320></a>
   <br />
