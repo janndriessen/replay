@@ -1,5 +1,18 @@
 import { useEffect, useState } from "react";
 import {
+  Address,
+  formatEther,
+  parseEther,
+  parseGwei,
+  serializeTransaction,
+} from "viem";
+import {
+  useNetwork,
+  usePrepareSendTransaction,
+  usePublicClient,
+  useSendTransaction,
+} from "wagmi";
+import {
   Button,
   Input,
   InputGroup,
@@ -14,27 +27,9 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { formatEther, parseEther, parseGwei, serializeTransaction } from "viem";
-import {
-  useNetwork,
-  usePrepareSendTransaction,
-  useSendTransaction,
-} from "wagmi";
 
-import { estimateFees, getL2Client } from "../estimateFees";
-import { OP_ABI } from "../abis/OP_ABI";
+import { estimateFees } from "../providers/estimate-fees-v2";
 import { Simulator } from "./Simulatooor";
-
-const clientParams = {
-  chainId: 10,
-  rpcUrl:
-    process.env.VITE_L2_RPC_URL ??
-    `https://opt-mainnet.g.alchemy.com/v2/${
-      import.meta.env.VITE_ALCHEMY_API_KEY
-    }`,
-} as const;
-
-const viemClient = getL2Client(clientParams);
 
 const serialized = serializeTransaction({
   chainId: 10,
@@ -98,6 +93,7 @@ interface ReplayTransactionProps {
 }
 
 export function ReplayTransaction({ hash }: ReplayTransactionProps) {
+  const publicClient = usePublicClient();
   const { chain } = useNetwork();
   const [fees, setFees] = useState<Fees | null>(null);
 
@@ -112,31 +108,20 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const { sendTransaction, error: sendError } = useSendTransaction(config);
 
   useEffect(() => {
-    const fetch = async () => {
-      const fees = await estimateFees({
-        client: viemClient,
-        chainId: 10,
-        functionName: "transfer",
-        abi: OP_ABI,
-        args: ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", parseEther("10")],
-        account: "0xdfa7D985aA3c73e6cD87cC088943627427C56C9E",
-        to: "0x4200000000000000000000000000000000000042",
-      });
+    const fetchDetails = async () => {
+      const tx = await publicClient.getTransaction({ hash: hash as Address });
+      console.log("//////", hash);
+      console.log(tx);
+      const { l1Fee, l2Fee, total } = await estimateFees(tx, publicClient);
+      console.log(l1Fee.toString(), l2Fee.toString(), total.toString());
       setFees({
-        l1: formatEther(fees.l1Fee),
-        l2: formatEther(fees.l2Fee),
-        total: formatEther(fees.total),
+        l1: formatEther(l1Fee),
+        l2: formatEther(l2Fee),
+        total: formatEther(total),
       });
-      console.log(
-        "FEES",
-        fees,
-        fees.l1Fee.toString(),
-        fees.l2Fee.toString(),
-        fees.total.toString(),
-      );
     };
-    fetch();
-  }, []);
+    fetchDetails();
+  }, [hash]);
 
   const openExplorer = (url: string) => {
     window.open(url, "_blank", "noreferrer");
