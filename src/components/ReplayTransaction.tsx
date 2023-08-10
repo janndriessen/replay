@@ -4,6 +4,7 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  InputRightElement,
   Table,
   TableCaption,
   TableContainer,
@@ -14,7 +15,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { parseEther, parseGwei, serializeTransaction } from "viem";
-import { usePrepareSendTransaction, useSendTransaction } from "wagmi";
+import {
+  useNetwork,
+  usePrepareSendTransaction,
+  useSendTransaction,
+} from "wagmi";
 
 import { estimateFees, getL2Client } from "../estimateFees";
 import { OP_ABI } from "../abis/OP_ABI";
@@ -88,8 +93,16 @@ type Fees = {
   total: string;
 };
 
-export function ReplayTransaction() {
+interface ReplayTransactionProps {
+  hash: string;
+}
+
+export function ReplayTransaction({ hash }: ReplayTransactionProps) {
+  const { chain } = useNetwork();
   const [fees, setFees] = useState<Fees | null>(null);
+
+  const explorerUrl = chain?.blockExplorers?.default.url ?? "";
+
   // Send ETH to Vitalik
   const { config } = usePrepareSendTransaction({
     to: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
@@ -124,6 +137,10 @@ export function ReplayTransaction() {
     fetch();
   }, []);
 
+  const openExplorer = (url: string) => {
+    window.open(url, "_blank", "noreferrer");
+  };
+
   return (
     <>
       <InputGroup>
@@ -132,8 +149,18 @@ export function ReplayTransaction() {
           type="text"
           placeholder="0x00dead"
           isReadOnly={true}
-          onClick={() => console.log("etherscan")}
+          maxLength={10}
+          value={hash}
         />
+        <InputRightElement width="4.5rem" mr={"8px"}>
+          <Button
+            h="1.75rem"
+            size="sm"
+            onClick={() => openExplorer(`${explorerUrl}/tx/${hash}`)}
+          >
+            Explorer
+          </Button>
+        </InputRightElement>
       </InputGroup>
       <InputGroup mt={"16px"}>
         <InputLeftAddon children="Custom Gas Limit" />

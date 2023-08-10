@@ -43,6 +43,7 @@ export function App() {
   const [preloadedTxs, setPreloadedTxs] = useState<
     CovalentApiResponseTransaction[] | null
   >(null);
+  const [hash, setHash] = useState("");
 
   useEffect(() => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -71,6 +72,10 @@ export function App() {
             <Flex direction={"column"} margin={"auto"}>
               <TransactionsTable
                 preloadedTxs={preloadedTxs ?? []}
+                onClickTx={(hash) => {
+                  setHash(hash);
+                  onOpen();
+                }}
               ></TransactionsTable>
             </Flex>
           </Flex>
@@ -110,7 +115,7 @@ export function App() {
           <ModalHeader>🔴 Replay Transaction</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ReplayTransaction />
+            <ReplayTransaction hash={hash} />
           </ModalBody>
           <ModalFooter justifyContent={"center"}>
             <ReplayButton onClick={onClose} />

@@ -29,8 +29,12 @@ import { createFailedDepositTX } from "../transactions";
 
 interface TransactionsTableProps {
   preloadedTxs: CovalentApiResponseTransaction[];
+  onClickTx: (hash: string) => void;
 }
-export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
+export function TransactionsTable({
+  onClickTx,
+  preloadedTxs,
+}: TransactionsTableProps) {
   const { address } = useAccount();
   const { chain } = useNetwork();
   const [input, setInput] = useState("");
@@ -129,7 +133,7 @@ export function TransactionsTable({ preloadedTxs }: TransactionsTableProps) {
                   <Td isNumeric>{tx.pretty_value_quote}</Td>
                   <Td p="2">
                     {tx.successful ? null : (
-                      <Button onClick={() => console.log(tx.tx_hash)}>
+                      <Button onClick={() => onClickTx(tx.tx_hash)}>
                         Replay
                       </Button>
                     )}
