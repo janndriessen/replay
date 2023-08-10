@@ -144,6 +144,7 @@ export const getL2Client = (options: ClientOptions): PublicClient => {
     const viemChain = Object.values(chains)?.find(
       (chain) => chain.id === options.chainId,
     );
+    // CHANGED: had some config issues, so just forced the url here.
     const rpcUrls = {
       default: {
         http: [options.rpcUrl!],
@@ -152,8 +153,6 @@ export const getL2Client = (options: ClientOptions): PublicClient => {
         http: [options.rpcUrl!],
       },
     };
-    // TODO:
-    // : viemChain?.rpcUrls;
     if (!rpcUrls) {
       throw new Error(
         `No rpcUrls found for chainId ${options.chainId}.  Please explicitly provide one`,
