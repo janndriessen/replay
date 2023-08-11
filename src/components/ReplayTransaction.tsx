@@ -25,7 +25,7 @@ import {
 
 import { ReplayButton } from "./ReplayButton";
 import { estimateFees } from "../providers/estimate-fees-v2";
-import { useSimulateTransaction } from "../providers/useSimulateTx";
+import { useSimulateTransaction } from "../providers/usesimulatetx";
 import { Simulator } from "./Simulatooor";
 
 export enum ReplayPopupState {
@@ -42,9 +42,15 @@ type Fees = {
 
 interface ReplayTransactionProps {
   hash: string;
+  onError: () => void;
+  onSucces: (hash: string) => void;
 }
 
-export function ReplayTransaction({ hash }: ReplayTransactionProps) {
+export function ReplayTransaction({
+  hash,
+  onError,
+  onSucces,
+}: ReplayTransactionProps) {
   const publicClient = usePublicClient();
   const { chain } = useNetwork();
   const { simulateTx } = useSimulateTransaction();
@@ -59,7 +65,10 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
 
   const { config } = usePrepareSendTransaction({ ...tx, data: tx?.input });
   const {
+    data,
+    isError,
     isLoading: isSending,
+    isSuccess: sendingIsSuccess,
     sendTransaction,
     error: sendError,
   } = useSendTransaction(config);
@@ -101,6 +110,16 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
     };
     simulate();
   }, [tx]);
+
+  useEffect(() => {
+    if (!tx) return;
+    if (isError) {
+      onError();
+    }
+    if (sendingIsSuccess && data) {
+      onSucces(data.hash);
+    }
+  }, [data, isError, sendingIsSuccess]);
 
   const openExplorer = (url: string) => {
     window.open(url, "_blank", "noreferrer");

@@ -7,7 +7,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   SlideFade,
@@ -25,6 +24,7 @@ import {
   TransactionsTable,
 } from "./components";
 import { CovalentApiResponseTransaction } from "./providers/covalent-api";
+import { ReplayTransactionResult } from "./components/ReplayTransactionResult";
 
 export function App() {
   /**
@@ -45,6 +45,7 @@ export function App() {
     CovalentApiResponseTransaction[] | null
   >(null);
   const [hash, setHash] = useState("");
+  const [replayHash, setReplayHash] = useState("");
   const [replayPopupState, setReplayPopupState] = useState<ReplayPopupState>(
     ReplayPopupState.transaction,
   );
@@ -63,6 +64,16 @@ export function App() {
     onOpenNav();
     onCloseIntro();
   }, [dataLoaded]);
+
+  const onError = () => {
+    setReplayPopupState(ReplayPopupState.error);
+  };
+
+  const onSuccess = (hash: string) => {
+    if (hash.length < 10) return;
+    setReplayHash(hash);
+    setReplayPopupState(ReplayPopupState.success);
+  };
 
   return (
     <Flex direction={"column"} h="100vh">
@@ -122,11 +133,21 @@ export function App() {
             {(() => {
               switch (replayPopupState) {
                 case ReplayPopupState.error:
-                  return null;
                 case ReplayPopupState.success:
-                  return null;
+                  return (
+                    <ReplayTransactionResult
+                      hash={replayHash}
+                      onClose={() => onClose()}
+                    />
+                  );
                 default:
-                  return <ReplayTransaction hash={hash} />;
+                  return (
+                    <ReplayTransaction
+                      hash={hash}
+                      onError={onError}
+                      onSucces={(hash) => onSuccess(hash)}
+                    />
+                  );
               }
             })()}
           </ModalBody>
