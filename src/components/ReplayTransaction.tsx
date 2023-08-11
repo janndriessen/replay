@@ -8,6 +8,7 @@ import {
 } from "wagmi";
 import {
   Button,
+  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -22,6 +23,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 
+import { ReplayButton } from "./ReplayButton";
 import { estimateFees } from "../providers/estimate-fees-v2";
 import { useSimulateTransaction } from "../providers/useSimulateTx";
 import { Simulator } from "./Simulatooor";
@@ -46,6 +48,7 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const publicClient = usePublicClient();
   const { chain } = useNetwork();
   const { simulateTx } = useSimulateTransaction();
+
   const [customGasLimit, setCustomGasLimit] = useState("");
   const [fees, setFees] = useState<Fees | null>(null);
   const [isSuccess, setSimulationSuccess] = useState(true);
@@ -54,12 +57,12 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const currencySymbol = chain?.nativeCurrency.symbol ?? "";
   const explorerUrl = chain?.blockExplorers?.default.url ?? "";
 
-  // Send ETH to Vitalik
-  const { config } = usePrepareSendTransaction({
-    to: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-    value: parseEther("0.001"),
-  });
-  const { sendTransaction, error: sendError } = useSendTransaction(config);
+  const { config } = usePrepareSendTransaction({ ...tx, data: tx?.input });
+  const {
+    isLoading: isSending,
+    sendTransaction,
+    error: sendError,
+  } = useSendTransaction(config);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -74,6 +77,7 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
       if (customGasLimit.length > 0) {
         tx.gas = BigInt(customGasLimit) ?? tx.gas;
       }
+      tx.gasPrice = undefined;
       const { l1Fee, l2Fee, total } = await estimateFees(tx, publicClient);
       console.log(l1Fee.toString(), l2Fee.toString(), total.toString());
       setFees({
@@ -103,7 +107,9 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   };
 
   const replay = () => {
-    // TODO: send it
+    if (!sendTransaction) return;
+    console.log(config);
+    sendTransaction();
   };
 
   return (
@@ -166,6 +172,9 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
         </Table>
       </TableContainer>
       <Simulator isSuccess={isSuccess} />
+      <Flex justify={"center"} my="16px">
+        <ReplayButton onClick={replay} />
+      </Flex>
     </>
   );
 }

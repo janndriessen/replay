@@ -130,9 +130,6 @@ export function App() {
               }
             })()}
           </ModalBody>
-          <ModalFooter justifyContent={"center"}>
-            <ReplayButton onClick={onClose} />
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </Flex>

@@ -15,7 +15,7 @@ export function Simulator({ isSuccess }: SimulatorProps) {
       pl={"16px"}
       pr={"32px"}
       py={"16px"}
-      mt={"32px"}
+      mt={"16px"}
       align={"center"}
       justify={"space-between"}
     >
