@@ -1,10 +1,11 @@
-import { Button } from "@chakra-ui/react";
+import { Button, Spinner, Text } from "@chakra-ui/react";
 
 interface ReplayButtonProps {
+  isLoading: boolean;
   onClick: () => void;
 }
 
-export const ReplayButton = ({ onClick }: ReplayButtonProps) => (
+export const ReplayButton = ({ isLoading, onClick }: ReplayButtonProps) => (
   <Button
     bg={"op"}
     borderRadius={"12"}
@@ -15,6 +16,6 @@ export const ReplayButton = ({ onClick }: ReplayButtonProps) => (
     py="6"
     onClick={onClick}
   >
-    Replay
+    {isLoading ? <Spinner color="white" /> : <Text>Replay</Text>}
   </Button>
 );

@@ -173,7 +173,7 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
       </TableContainer>
       <Simulator isSuccess={isSuccess} />
       <Flex justify={"center"} my="16px">
-        <ReplayButton onClick={replay} />
+        <ReplayButton isLoading={isSending} onClick={replay} />
       </Flex>
     </>
   );
