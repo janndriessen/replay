@@ -1,9 +1,15 @@
 # 🔴 replay
 
-A tool to replay failed transactions conveniently for any user.
+A tool to replay failed transactions in a convenient and easy way.
 
 Building this tool was inspired by this idea from the Optimism ecosystem contributions list :
 https://github.com/ethereum-optimism/ecosystem-contributions/issues/100.
+
+For most users it's to difficult to use a SDK or CLI to replay failed
+transactions and understand all necessary steps. So `replay` abstracts away the
+the difficult parts providing an easy-to-use UI to do just that.
+
+Submission for ETHGlobal Superhack 2023 by JD.
 
 ## Sponsors
 
@@ -14,18 +20,19 @@ https://github.com/ethereum-optimism/ecosystem-contributions/issues/100.
 
 ## Getting started
 
-- Follow the instructions below in the original README of the optimism starter kit
-- cp .env.example .env
-- For this project you must set...
+- Follow the instructions below in the original README of the optimism starter kit.
+- `cp .env.example .env`
+- For this project you must set at least `VITE_ALCHEMY_API_KEY`, `VITE_WALLETCONNECT_PROJECT_ID` and `VITE_COVALENT_API_KEY`
 - `pnpm i`
 - `pnpm dev`
 
 ## Tech
 
-Mainly used the following tech stack to build the app.
+Mainly used the following tech stack to build the app:
 
-- [Optimism starter](https://github.com/ethereum-optimism/optimism-starter) template - specficially to get an easy start when participating in hackathons. (Left the original README untouched below 👇)
-- [Covalent](https://www.covalenthq.com/) for anything around fetching tx's.
+- [Optimism starter](https://github.com/ethereum-optimism/optimism-starter) template - specficially made to get an easy start when participating in hackathons. (Left the original README untouched below. 👇)
+- [Covalent](https://www.covalenthq.com/) for anything around fetching tx's data.
+- [Tenderly](https://tenderly.co/) for simulating tx's.
 - UI w/ [ChakraUI](https://chakra-ui.com/)
 - [Viem](https://viem.sh/)
 - [Wagmi](https://wagmi.sh/)

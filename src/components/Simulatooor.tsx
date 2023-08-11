@@ -1,9 +1,11 @@
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { Flex, Text } from "@chakra-ui/react";
 
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+interface SimulatorProps {
+  isSuccess: boolean;
+}
 
-export function Simulator() {
-  const isSuccess = true;
+export function Simulator({ isSuccess }: SimulatorProps) {
   return (
     <Flex
       bg={isSuccess ? "green.50" : "red.50"}

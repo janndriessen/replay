@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Address,
-  formatEther,
-  parseEther,
-  parseGwei,
-  serializeTransaction,
-} from "viem";
+import { Address, formatEther, parseEther } from "viem";
 import {
   useNetwork,
   usePrepareSendTransaction,
@@ -29,58 +23,14 @@ import {
 } from "@chakra-ui/react";
 
 import { estimateFees } from "../providers/estimate-fees-v2";
+import { useSimulateTransaction } from "../providers/useSimulateTx";
 import { Simulator } from "./Simulatooor";
 
-const serialized = serializeTransaction({
-  chainId: 10,
-  gas: 21001n,
-  gasLimit: 500_000,
-  maxFeePerGas: parseGwei("20"),
-  maxPriorityFeePerGas: parseGwei("2"),
-  nonce: 69,
-  to: "0x1234512345123451234512345123451234512345",
-  value: parseEther("0.01"),
-});
-console.log(serialized);
-
-// data
-// to
-// gasPrice
-// type
-// nonce
-// gasLimit
-
-// useEffect(() => {
-//   console.log("Error sending tx:", sendError);
-// }, [sendError]);
-
-// const test = () => {
-//   if (!sendTransaction) return;
-//   try {
-//     sendTransaction();
-//   } catch (error: unknown) {
-//     console.log("Error sending tx:", error);
-//   }
-// };
-
-interface ReplayButtonProps {
-  onClick: () => void;
+export enum ReplayPopupState {
+  transaction,
+  error,
+  success,
 }
-
-export const ReplayButton = ({ onClick }: ReplayButtonProps) => (
-  <Button
-    bg={"op"}
-    borderRadius={"12"}
-    color={"#fff"}
-    fontSize={"16"}
-    fontWeight={"700"}
-    px="20"
-    py="6"
-    onClick={onClick}
-  >
-    Replay
-  </Button>
-);
 
 type Fees = {
   l1: string;
@@ -95,8 +45,11 @@ interface ReplayTransactionProps {
 export function ReplayTransaction({ hash }: ReplayTransactionProps) {
   const publicClient = usePublicClient();
   const { chain } = useNetwork();
+  const { simulateTx } = useSimulateTransaction();
   const [customGasLimit, setCustomGasLimit] = useState("");
   const [fees, setFees] = useState<Fees | null>(null);
+  const [isSuccess, setSimulationSuccess] = useState(true);
+  const [tx, setTransaction] = useState<any | null>(null);
 
   const currencySymbol = chain?.nativeCurrency.symbol ?? "";
   const explorerUrl = chain?.blockExplorers?.default.url ?? "";
@@ -118,7 +71,9 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
         BigInt(customGasLimit).toString(),
         tx.gas.toString(),
       );
-      tx.gas = BigInt(customGasLimit) ?? tx.gas;
+      if (customGasLimit.length > 0) {
+        tx.gas = BigInt(customGasLimit) ?? tx.gas;
+      }
       const { l1Fee, l2Fee, total } = await estimateFees(tx, publicClient);
       console.log(l1Fee.toString(), l2Fee.toString(), total.toString());
       setFees({
@@ -126,16 +81,29 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
         l2: formatEther(l2Fee),
         total: formatEther(total),
       });
-
       if (customGasLimit.length === 0) {
         setCustomGasLimit(l2Fee.toString());
       }
+      setTransaction(tx);
     };
     fetchDetails();
   }, [customGasLimit, hash]);
 
+  useEffect(() => {
+    if (!tx) return;
+    const simulate = async () => {
+      const success = await simulateTx(tx);
+      setSimulationSuccess(success);
+    };
+    simulate();
+  }, [tx]);
+
   const openExplorer = (url: string) => {
     window.open(url, "_blank", "noreferrer");
+  };
+
+  const replay = () => {
+    // TODO: send it
   };
 
   return (
@@ -197,7 +165,7 @@ export function ReplayTransaction({ hash }: ReplayTransactionProps) {
           </Tbody>
         </Table>
       </TableContainer>
-      <Simulator />
+      <Simulator isSuccess={isSuccess} />
     </>
   );
 }

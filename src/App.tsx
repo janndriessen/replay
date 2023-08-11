@@ -20,6 +20,7 @@ import {
   Loader,
   NavigationBar,
   ReplayButton,
+  ReplayPopupState,
   ReplayTransaction,
   TransactionsTable,
 } from "./components";
@@ -44,6 +45,9 @@ export function App() {
     CovalentApiResponseTransaction[] | null
   >(null);
   const [hash, setHash] = useState("");
+  const [replayPopupState, setReplayPopupState] = useState<ReplayPopupState>(
+    ReplayPopupState.transaction,
+  );
 
   useEffect(() => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -115,7 +119,16 @@ export function App() {
           <ModalHeader>🔴 Replay Transaction</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ReplayTransaction hash={hash} />
+            {(() => {
+              switch (replayPopupState) {
+                case ReplayPopupState.error:
+                  return null;
+                case ReplayPopupState.success:
+                  return null;
+                default:
+                  return <ReplayTransaction hash={hash} />;
+              }
+            })()}
           </ModalBody>
           <ModalFooter justifyContent={"center"}>
             <ReplayButton onClick={onClose} />
