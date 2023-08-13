@@ -1,4 +1,4 @@
-# 🔴 replay
+# 🔴 Replay
 
 A tool to replay failed transactions in a convenient and easy way.
 
@@ -7,7 +7,8 @@ https://github.com/ethereum-optimism/ecosystem-contributions/issues/100.
 
 For most users it's to difficult to use a SDK or CLI to replay failed
 transactions and understand all necessary steps. So `replay` abstracts away the
-the difficult parts providing an easy-to-use UI to do just that.
+the difficult parts providing an easy-to-use UI to do just that. Also developers
+are provided with this convenience when testing and developing on any of the networks.
 
 Submission for ETHGlobal Superhack 2023 by JD.
 
@@ -22,13 +23,13 @@ Submission for ETHGlobal Superhack 2023 by JD.
 
 - Follow the instructions below in the original README of the optimism starter kit.
 - `cp .env.example .env`
-- For this project you must set at least `VITE_ALCHEMY_API_KEY`, `VITE_WALLETCONNECT_PROJECT_ID` and `VITE_COVALENT_API_KEY`
+- For this project you must set at least `VITE_ALCHEMY_API_KEY`, `VITE_WALLETCONNECT_PROJECT_ID` and `VITE_COVALENT_API_KEY`, `VITE_TENDERLY_ACCESS_KEY` + `VITE_TENDERLY_USER`
 - `pnpm i`
 - `pnpm dev`
 
 ## Tech
 
-Mainly used the following tech stack to build the app:
+Mainly, the following tech stack was used to build the app:
 
 - [Optimism starter](https://github.com/ethereum-optimism/optimism-starter) template - specficially made to get an easy start when participating in hackathons. (Left the original README untouched below. 👇)
 - [Covalent](https://www.covalenthq.com/) for anything around fetching tx's data.
@@ -40,10 +41,20 @@ Mainly used the following tech stack to build the app:
 
 ### Issues
 
-Some of the issues I had with using tools of the sponsors are marked inside the code:
+Some of the issues I had with using tools of the sponsors are marked inside the code. Additional infos here:
 
-- Optimsim:
-- Covalent:
+- Covalent: The SDK version I used didn't let me fetch transactions for all needed chains e.g. Optimism Goerli. So I created a simple class to fetch from the API directly - which worked perfectly! Check the code in [covalent-api.ts](./src/providers/covalent-api.ts) for more details.
+- Optimsim: The estimate-fees SDK couldn't be used due to some versioning issues. So I first copied the essential
+  parts to [estimate-fees.ts](./src/providers/estimate-fees.ts) and altered it to my needs. Later I noticed that this
+  still wasn't what I needed because the SDK is tailored to contract function calls and I was using transaction objects. So I created my own version of `estimateFees` in [estimate-fees-v2.ts](./src/providers/estimate-fees-v2.ts).
+
+## How to improve this tool?
+
+Obviously, during a hackathon shortcuts are taken. So the tool is probably not production ready and those things would have to be cleaned up. Some of the features that could be added are:
+
+- Add all the chains (at least for all evm-compatible chains it should work)
+- Guides and tips for users (to navigate the flows and understand the data)
+- Improved error handling and edge cases
 
 ---
 
