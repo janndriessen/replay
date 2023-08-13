@@ -51,11 +51,13 @@ export function App() {
   );
 
   useEffect(() => {
+    console.log("INIT");
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
     const openIntro = async () => {
       await delay(750);
       onOpenIntro();
     };
+    if (introIsOpen) return;
     openIntro();
   }, []);
 
@@ -77,24 +79,25 @@ export function App() {
 
   return (
     <Flex direction={"column"} h="100vh">
-      <SlideFade in={navIsOpen} offsetY={"-100px"}>
-        <NavigationBar isConnected={isConnected} />
-      </SlideFade>
-
       {dataLoaded && preloadedTxs !== null ? (
-        <SlideFade in={!introIsOpen && dataLoaded && preloadedTxs !== null}>
-          <Flex h="80vh" margin={"0 auto"}>
-            <Flex direction={"column"} margin={"auto"}>
-              <TransactionsTable
-                preloadedTxs={preloadedTxs ?? []}
-                onClickTx={(hash) => {
-                  setHash(hash);
-                  onOpen();
-                }}
-              ></TransactionsTable>
+        <>
+          <SlideFade in={navIsOpen} offsetY={"-100px"}>
+            <NavigationBar isConnected={isConnected} />
+          </SlideFade>
+          <SlideFade in={navIsOpen}>
+            <Flex h="80vh" margin={"0 auto"}>
+              <Flex direction={"column"} margin={"auto"}>
+                <TransactionsTable
+                  preloadedTxs={preloadedTxs ?? []}
+                  onClickTx={(hash) => {
+                    setHash(hash);
+                    onOpen();
+                  }}
+                ></TransactionsTable>
+              </Flex>
             </Flex>
-          </Flex>
-        </SlideFade>
+          </SlideFade>
+        </>
       ) : (
         <Fade in={introIsOpen}>
           <Flex h="80vh" margin={"auto"}>
