@@ -50,20 +50,20 @@ export async function createFailedDepositTX(client: WalletClient) {
   return hash;
 }
 
-const url = `https://opt-mainnet.g.alchemy.com/v2/${
-  import.meta.env.VITE_ALCHEMY_API_KEY
-}`;
+// const url = `https://opt-mainnet.g.alchemy.com/v2/${
+//   import.meta.env.VITE_ALCHEMY_API_KEY
+// }`;
 
-const account = privateKeyToAccount("0x00dead");
+// const account = privateKeyToAccount("0x00dead");
 
-const client = createWalletClient({
-  account,
-  chain: optimism,
-  transport: http(url),
-});
+// const client = createWalletClient({
+//   account,
+//   chain: optimism,
+//   transport: http(url),
+// });
 
-export async function main() {
-  // sendTransactionFail(client).then((hash) => {
-  //   console.log("sent", hash);
-  // });
-}
+// export async function main() {
+//   // sendTransactionFail(client).then((hash) => {
+//   //   console.log("sent", hash);
+//   // });
+// }
